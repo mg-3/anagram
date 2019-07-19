@@ -1,9 +1,6 @@
 package com.example.assignment.anagram
 
-import com.example.assignment.anagram.controllers.AnagramController
-import com.example.assignment.anagram.models.AnagramModel
-import org.assertj.core.api.Assertions.assertThat
-import org.hamcrest.CoreMatchers.containsString
+import com.google.common.hash.BloomFilter
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,14 +21,29 @@ class AnagramApplicationTests {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
+    @Autowired
+    private lateinit var permutations: Permutations
+
+    @Autowired
+    private lateinit var dictionaryBloomFilter: BloomFilter<String>
+
+    @Autowired lateinit var dictionarySet: Set<String>
     @Test
-    fun contextLoads() {
-        val am = AnagramModel(arrayOf("dear", "dare", "read"))
-
-        this.mockMvc.perform(get("/anagrams?word=dare")).andDo(ResultHandler { x -> println(x) }).andExpect(status().isOk)
+    fun getAnagram() {
+            this.mockMvc.perform(get("/anagrams?word=dare"))
+                .andDo(ResultHandler { x -> println(x.response.contentAsString) })
+                .andExpect(status().isOk)
                 .andExpect(content().json("""{"anagrams":["dear","dare","read"]}"""))
+    }
 
-//                        .string(containsString("Hello World")))
+    @Test
+    fun permutation_1() {
+        val s = "dare"
+        dictionarySet = mutableSetOf("dear", "dare", "read", "foobar")
+        permutations.perm2(s)
+                .filter { p -> dictionarySet.contains(p) }
+                .filter { p -> p != s}
+                .forEach { p -> println(p) }
     }
 
 }
