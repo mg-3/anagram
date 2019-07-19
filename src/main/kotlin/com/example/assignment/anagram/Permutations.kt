@@ -13,7 +13,7 @@ class Permutations {
     }
 
     fun perm2(s: String) : MutableSet<String> {
-        if (s.length > 10) throw UnsupportedOperationException("This algorithm only supports strings up to length of 8")
+        if (s.length > 10) throw UnsupportedOperationException("This algorithm only supports strings up to length of 10")
         val n = s.length
         val a = CharArray(n)
         for (i in 0 until n)
